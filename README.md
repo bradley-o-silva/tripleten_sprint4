@@ -1,3 +1,5 @@
 # tripleten_sprint4
 
 In this project, we were given a large dataset of both new and used vehicles of all types and brands.  Because the dataset was so large, I decided to subset it, but not before creating a few new important variables of my own.  The original dataset contained a variable named 'model', which actually consisted of both the make and the model.  I decided to rename the 'model' variable to 'make_n_model', and from that, create the variables 'make' and 'model' by splitting it.  From the 'make' variable, I created a dictionary to map the nationality of each car brand into a new column named 'make_country'.  I also used a dictionary to create a numerical variable called 'condition_rank' from the 'condition' variable.  I decided to subset the data into sedans by filtering the 'type' variable.  I then only copied the variables I was interested in looking at into the subset.  Only then did I remove missing values to limit the ammount of data being discarded.  I was able to create visualizations of the average price of sedans by car brand nationality, condition, odometer reading, and model year.
+
+https://tripleten-sprint4-fjmk.onrender.com/

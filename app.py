@@ -7,9 +7,6 @@ import plotly.express as px
 
 df_og = pd.read_csv('vehicles_us.csv')
 
-# display data frame
-st.write(df_og)
-
 # fork original data frame into one that will be modified
 df_a1 = df_og
 
@@ -112,21 +109,42 @@ st.header('Average Sedan Price by Condition', divider='blue')
 
 fig4 = px.histogram(df_sedan, x='condition_rank', y='price',
              color='make_country', barmode='group',
-             histfunc='avg', height=400)
+             histfunc='avg', height=400,
+             labels={'condition_rank': '0 = salvage, 1 = fair, 2 = good, 3 = excellent, 4 = like new, 5 = new'})
 
 # Use this to show figure of plotly express histogram 
 st.plotly_chart(fig4)
 
 
 
-st.header('Price vs. Odometer Reading for Sedans', divider='blue')
+st.header('Model Year vs. Odometer Reading for Sedans', divider='blue')
 
 fig5 = px.scatter(df_sedan, x='model_year', 
                   y='odometer', color='make_country', 
-                  size='condition_rank')
+                  size='condition_rank',
+                  labels={'model_year': 'Model Year', 
+                      'odometer': 'Odometer Reading (in Miles)'})
 
 # Use this to show figure of plotly express histogram 
 st.plotly_chart(fig5)
+
+
+
+# Group the average 'price' of a vehicle by 'model_year' and 'make_country'
+df_sedan_price_avg_by_year = df_sedan.groupby(['model_year', 'make_country'])['price'].mean().reset_index() 
+
+
+
+st.header('Average Sedan Price by Model Year', divider='blue')
+
+fig6 = px.line(df_sedan_price_avg_by_year, 
+              x='model_year', y='price', 
+              color='make_country',
+              labels={'model_year': 'Model Year', 
+                      'price': 'Average Price'})
+
+# Use this to show figure of plotly express histogram 
+st.plotly_chart(fig6)
 
 
 

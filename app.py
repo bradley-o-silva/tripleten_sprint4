@@ -31,10 +31,113 @@ df_a1['model'] = new[1]
 # create separate make_n_type column using .agg()
 df_a1['make_n_type'] = df_a1[['make', 'type']].agg(' '.join, axis=1)
 
-# Create a histogram of vehicle prices
-fig1 = px.histogram(df_a1, x='price',
-                  title="Distribution of Used Vehicle Prices")
+# Create condition map to rank conditions numerically
+conditions_map = {
+    'new': 5,
+    'like new': 4,
+    'excellent': 3,
+    'good': 2,
+    'fair': 1,
+    'salvage': 0,
+}
+
+# Define new function for condition map
+def map_condition(condition: str) -> int:
+    return conditions_map[condition]
+
+df_a1['condition_rank'] = df_a1['condition'].apply(map_condition)
+
+# Create map to catagorize each car brand by country
+make_country_map = {
+    'acura': 'japanese',
+    'bmw': 'german',
+    'buick': 'american',
+    'cadillac': 'american',
+    'chevrolet': 'american',
+    'chrysler': 'american',
+    'dodge': 'american',
+    'ford': 'american',
+    'gmc': 'american',
+    'honda': 'japanese',
+    'hyundai': 'korean',
+    'jeep': 'american',
+    'kia': 'korean',
+    'mercedes-benz': 'german',
+    'nissan': 'japanese',
+    'ram': 'american',
+    'subaru': 'japanese',
+    'toyota': 'japanese',
+    'volkswagen': 'german',
+}
+
+# Define new function for make country map
+def map_make_country(make: str) -> str:
+    return make_country_map[make]
+
+df_a1['make_country'] = df_a1['make'].apply(map_make_country)
+
+# Create subset of only sedans
+df_sedan = df_a1.loc[df_a1['type'] == 'sedan']
+
+# Create subset with only the columns we are interested in
+df_sedan = df_sedan[['price', 'model_year', 'condition', 'odometer', 'condition_rank', 'make_country']].copy()
+
+# Drop rows where 'model_year' and 'odometer' have missing values
+
+# axis = 0 indicates rows are being dropped (axis = 1 would indicated columns are being dropped)
+# how = "any" indicates to drop all rows with one or more missing values
+df_sedan = df_sedan.dropna(axis = 0, how = "any")
+
+
+
+st.header('DataFrame of Sedans', divider='blue')
+
+st.dataframe(df_sedan, use_container_width=True)
+
+
+
+st.header('Distribution of Sedan Prices', divider='blue')
+
+fig3 = px.histogram(df_sedan, 
+                    x='price', 
+                    color='make_country',
+                    nbins=65)
 
 # Use this to show figure of plotly express histogram 
-# in 'app.py' for the Render Dashboard
-st.plotly_chart(fig1)
+st.plotly_chart(fig3)
+
+
+
+st.header('Average Sedan Price by Condition', divider='blue')
+
+fig4 = px.histogram(df_sedan, x='condition_rank', y='price',
+             color='make_country', barmode='group',
+             histfunc='avg', height=400)
+
+# Use this to show figure of plotly express histogram 
+st.plotly_chart(fig4)
+
+
+
+st.header('Price vs. Odometer Reading for Sedans', divider='blue')
+
+fig5 = px.scatter(df_sedan, x='model_year', 
+                  y='odometer', color='make_country', 
+                  size='condition_rank')
+
+# Use this to show figure of plotly express histogram 
+st.plotly_chart(fig5)
+
+
+
+st.header('Did you find this data interesting, informative, and well presented?', divider='blue')
+
+yes = st.checkbox("Yes") 
+
+if yes: 
+    st.write("Thank you for engaging!")
+
+no = st.checkbox("No") 
+
+if no: 
+    st.write("Please let me know where I can improve!")

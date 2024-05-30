@@ -121,7 +121,7 @@ st.header('Model Year vs. Odometer Reading for Sedans', divider='blue')
 
 fig5 = px.scatter(df_sedan, x='model_year', 
                   y='odometer', color='make_country', 
-                  size='condition_rank',
+                  size='price',
                   labels={'model_year': 'Model Year', 
                       'odometer': 'Odometer Reading (in Miles)'})
 
